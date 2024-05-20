@@ -14,6 +14,7 @@ import RecoveryToken from './models/recoveryTokenModel.js';
 import Resultados from './models/resultadosModel.js';
 import Saque from './models/saquesModel.js';
 import Roles from './models/rolesmodel.js';
+import Alumnos from './models/alumnosModel.js';
 
 
 

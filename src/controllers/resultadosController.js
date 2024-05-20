@@ -116,3 +116,83 @@ export const getResultadosByIdSaque = async (req, res) => {
       });
     }
   }
+
+  export const getResultadosByIdAlumno = async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+      // Obtener el ID del saque según el tipo de saque
+      const user = await User.findByPk(id);
+  
+      if (!user) {
+        return res.status(404).json({
+          code: -1,
+          message: `No se encontró ningún user con el id: ${id}`
+        });
+      }
+  
+      // Obtener todos los resultados relacionados con el ID del saque
+      const resultados = await Resultados.findAll({
+        where: {
+          user_id: user.id_user
+        }
+      });
+  
+      res.status(200).json({
+        code: 1,
+        message: 'Resultados list',
+        data: resultados
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        code: -100,
+        message: 'An error occurred while obtaining the resultados'
+      });
+    }
+  }
+
+  export const getResultadosSaqueAlumno = async (req, res) => {
+    const { user_id, saque_id } = req.body;
+  
+    try {
+      // Obtener el ID del saque según el tipo de saque
+      const saque = await Saque.findByPk(saque_id);
+  
+      if (!saque) {
+        return res.status(404).json({
+          code: -1,
+          message: `No se encontró ningún saque con el id: ${saque_id}`
+        });
+      }
+
+      const user = await User.findByPk(user_id);
+
+      if (!user) {
+        return res.status(404).json({
+          code: -1,
+          message: `No se encontró ningún usuario con el id: ${user_id}`
+        });
+      }
+  
+      // Obtener todos los resultados relacionados con el ID del saque
+      const resultados = await Resultados.findAll({
+        where: {
+          user_id: user.id_user,
+          saque_id: saque.id_saque
+        }
+      });
+  
+      res.status(200).json({
+        code: 1,
+        message: 'Resultados list',
+        data: resultados
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        code: -100,
+        message: 'An error occurred while obtaining the resultados'
+      });
+    }
+  }

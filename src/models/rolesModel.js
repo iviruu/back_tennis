@@ -10,6 +10,7 @@ const Roles = sequelize.define('Roles', {
   role: {
     type: DataTypes.STRING(50),
     allowNull: false,
+    unique: true
   }
 },{
   timestamps: false, // Activa la creación automática de createdAt y updatedAt

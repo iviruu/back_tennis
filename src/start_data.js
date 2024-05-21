@@ -5,6 +5,18 @@ import User from './models/userModel.js';
 
 const insertInitialUserData = async () => {
 
+  const rolesData = [
+    {
+      role: 'alumno'
+    },
+    {
+      role: 'profesor'
+    }
+  ];
+
+  await Roles.bulkCreate(rolesData, { ignoreDuplicates: true });
+  
+
   const userData = [
     {
       email: 'ismaely@gmail.com',
@@ -109,18 +121,7 @@ const insertInitialUserData = async () => {
   ];
 
   await Saque.bulkCreate(saqueData, { ignoreDuplicates: true });
-
-  const rolesData = [
-    {
-      role: 'alumno'
-    },
-    {
-      role: 'profesor'
-    }
-  ];
-
-  await Roles.bulkCreate(rolesData, { ignoreDuplicates: true });
-  
+ 
 }
 export { insertInitialUserData };
 

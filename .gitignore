@@ -11,9 +11,7 @@ yarn-error.log*
 *.seed
 *.pid.lock
 
-# Archivos de configuración
-.env
-.env.*
+# Archivos de configuracion 
 
 # Archivos de sistema
 .DS_Store

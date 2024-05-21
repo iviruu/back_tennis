@@ -8,13 +8,7 @@ import testRoutes from './routes/testRoutes.js';
 import { testConnection } from './db.js';
 import dotenv from 'dotenv';
 import { insertInitialUserData } from './start_data.js';
-import { sequelize } from './db.js';
-import User from './models/userModel.js';
-import RecoveryToken from './models/recoveryTokenModel.js';
-import Resultados from './models/resultadosModel.js';
-import Saque from './models/saquesModel.js';
-import Roles from './models/rolesmodel.js';
-import Alumnos from './models/alumnosModel.js';
+
 
 
 

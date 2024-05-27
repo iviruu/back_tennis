@@ -152,7 +152,7 @@ export const getResultadosByIdSaque = async (req, res) => {
     }
   }
 
-  export const getResultadosSaqueAlumno = async (req, res) => {
+  export const postResultadosSaqueAlumno = async (req, res) => {
     const { user_id, saque_id } = req.body;
   
     try {

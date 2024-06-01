@@ -100,7 +100,7 @@ export const login = async (req, res) => {
       path: '/',
     });
     res.setHeader('Set-Cookie', token);
-
+    
     // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
@@ -109,7 +109,8 @@ export const login = async (req, res) => {
         user: {
           name: user.name,
           surname: user.surname,
-          email: user.email
+          email: user.email,
+          roles: String(user.roles)
         } 
       }
     });

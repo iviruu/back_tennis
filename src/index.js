@@ -7,7 +7,10 @@ import userRoutes from './routes/userRoutes.js';
 import testRoutes from './routes/testRoutes.js';
 import { testConnection } from './db.js';
 import dotenv from 'dotenv';
+import path from 'path';
 import { insertInitialUserData } from './start_data.js';
+
+
 
 
 
@@ -39,6 +42,10 @@ app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 
 app.use('/test', testRoutes);
+
+// Configura Express para servir archivos estáticos desde el directorio 'uploads'
+const __dirname = path.resolve();
+app.use('/uploads', express.static(path.join(__dirname, 'src/uploads')));
 
 // Iniciar el servidor
 app.listen(3000, () => {

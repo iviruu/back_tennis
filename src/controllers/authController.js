@@ -35,6 +35,7 @@ export const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, Number(process.env.BCRYPT_SALT));
     const newUser = new User({ email, password: hashedPassword, name, surname, roles, status: 1 });
     await newUser.save();
+    const user = req.body;
 
     // Generar un token de acceso y lo guardo en un token seguro (httpOnly)
     const accessToken = jwt.sign({ id_user: newUser.id_user, name: newUser.name }, process.env.JWT_SECRET);
@@ -51,6 +52,14 @@ export const register = async (req, res) => {
     res.status(200).json({
       code: 1,
       message: 'Usuario registrado correctamente',
+      data: {
+        user: {
+          name: user.name,
+          surname: user.surname,
+          email: user.email,
+          roles: String(user.roles)
+        } 
+      }
     });
   } catch (error) {
     console.error(error);

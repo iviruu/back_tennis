@@ -22,12 +22,14 @@ const insertInitialUserData = async () => {
       email: 'ismaely@gmail.com',
       password: '$2b$10$tXrqo7VdSPCLAsIUhrVsYejYeMt9FLo9J4OchgCKwuDvpeDK6Xf1q', //pass: ismael123
       name: 'Ismael',
+      surname: 'kale',
       roles: 1
     }, 
     {
       email: 'laura@hotmail.com',
       password: '$2b$10$tXrqo7VdSPCLAsIUhrVsYejYeMt9FLo9J4OchgCKwuDvpeDK6Xf1q', //pass: ismael123
       name: 'Laura',
+      surname: 'kale',
       roles: 1
     },
     {

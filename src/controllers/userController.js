@@ -34,6 +34,60 @@ export const getUser = async (req, res) => {
   }
 };
 
+export const updateUser = async (req, res) => {
+  // Validar los datos de entrada
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { name, surname, email } = req.body;
+  const userId = req.user.id_user;
+
+  try {
+    // Verificar si el correo electrónico ya está en uso
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser && existingUser.id_user !== userId) {
+      return res.status(400).json({
+        code: -104,
+        message: 'El correo electrónico ya está en uso por otro usuario.',
+      });
+    }
+
+    // Actualizar los datos del usuario
+    await User.update(
+      { name, surname, email },
+      { where: { id_user: userId } }
+    );
+
+    // Obtener los datos actualizados del usuario
+    const updatedUser = await User.findByPk(userId);
+
+    // Enviar la respuesta con los datos actualizados del usuario
+    res.status(200).json({
+      code: 1,
+      message: 'Usuario actualizado correctamente.',
+      data: {
+        id_user: updatedUser.id_user,
+        email: updatedUser.email,
+        name: updatedUser.name,
+        surname: updatedUser.surname,
+        photo: updatedUser.photo,
+        roles: updatedUser.roles,
+        created_at: updatedUser.created_at,
+        updated_at: updatedUser.updated_at,
+      }
+    });
+  } catch (error) {
+    console.error('Error al actualizar el usuario:', error);
+    res.status(500).json({
+      code: -100,
+      message: 'Ocurrió un error al actualizar el usuario.',
+      error: error.message,
+    });
+  }
+};
+
 export const uploadPhoto = async (req, res) => {
   try {
     const rutaArchivo = "./src/uploads/"; // Ruta completa al archivo que deseas eliminar

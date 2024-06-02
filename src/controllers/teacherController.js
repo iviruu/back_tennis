@@ -54,7 +54,7 @@ export const createRelacionAlumnoProfesor = async (req, res) => {
     try {
       // Obtener todas las relaciones donde el profesor sea el indicado
       const relaciones = await Alumnos.findAll({
-        where: { teacher_id },
+        where: { teacher_id, estado_relacion: 1 },
         include: [{ model: User, as: 'Alumno', attributes: ['name', 'surname']  }]
       });
   
@@ -71,3 +71,89 @@ export const createRelacionAlumnoProfesor = async (req, res) => {
       });
     }
   };
+
+  export const getAlumnosList = async (req, res) => {
+    try {
+      const alumnos = await User.findAll({
+        where: { roles: 1 }
+      });
+  
+      res.status(200).json({
+        code: 1,
+        message: 'Lista de alumnos obtenida exitosamente',
+        data: 
+        alumnos.map(alumno => {
+          return {
+            id: alumno.id_user,
+            name: alumno.name,
+            surname: alumno.surname,
+            email: alumno.email,
+          }
+      })
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        code: -100,
+        message: 'Ocurrió un error al obtener la lista de alumnos'
+      });
+    }
+  }
+
+  export const getRelacion = async (req, res) => {
+    const { alumno_id } = req.params;
+  
+    try {
+      // Obtener todas las relaciones donde el profesor sea el indicado
+      const relacion = await Alumnos.findOne({
+        where: { alumno_id, estado_relacion: 0},
+        include: [{ model: User, as: 'Teacher', attributes: ['name', 'surname'] }]
+      });
+  
+      res.status(200).json({
+        code: 1,
+        message: 'Relación obtenida exitosamente',
+        data: relacion
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        code: -100,
+        message: 'Ocurrió un error al obtener la relación'
+      });
+    }
+  }
+
+  export const updateRelacion = async (req, res) => {
+    const { relacion_id } = req.params;
+    const { estado_relacion } = req.body;
+  
+    try {
+      // Obtener todas las relaciones donde el profesor sea el indicado
+      const relacion = await Alumnos.findOne({
+        where: { relacion_id }
+      });
+  
+      if (!relacion) {
+        return res.status(404).json({
+          code: -1,
+          message: `No se encontró `
+        });
+      }
+  
+      relacion.estado_relacion = estado_relacion;
+      await relacion.save();
+  
+      res.status(200).json({
+        code: 1,
+        message: 'Relación actualizada exitosamente',
+        data: relacion
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        code: -100,
+        message: 'Ocurrió un error al actualizar la relación'
+      });
+    }
+  }

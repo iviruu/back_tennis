@@ -1,10 +1,10 @@
 // src/routes/userRoutes.js
 import { Router } from 'express';
-import { getUser, uploadPhoto } from '../controllers/userController.js';
+import { getUser, updateUser, uploadPhoto } from '../controllers/userController.js';
 import { authenticateToken } from '../middlewares/authenticateToken.js';
 import { uploadFileMiddleware } from '../middlewares/upload.js';
 import { getSaques, getResultados, getResultadosByIdSaque, createResultados, getResultadosByIdAlumno, postResultadosSaqueAlumno } from '../controllers/resultadosController.js';
-import { createRelacionAlumnoProfesor, getAlumnosByProfesor } from '../controllers/teachercontroller.js';
+import { createRelacionAlumnoProfesor, getAlumnosByProfesor, getAlumnosList, getRelacion, updateRelacion } from '../controllers/teachercontroller.js';
 
 
 const router = Router();
@@ -20,5 +20,10 @@ router.get('/resultados/alumno/:id', authenticateToken([2,1]), getResultadosById
 router.post('/resultados/solo', authenticateToken([2,1]), postResultadosSaqueAlumno);
 router.post('/teacher/create', authenticateToken([2,1]), createRelacionAlumnoProfesor);
 router.get('/teacher/alumnos/:teacher_id', authenticateToken([2,1]), getAlumnosByProfesor);
+router.get('/teacher/alumnosList', authenticateToken([2,1]), getAlumnosList);
+router.get('/alumno/relacion/:alumno_id', authenticateToken([2,1]), getRelacion);
+router.post('/alumno/update_relacion/:relacion_id', authenticateToken([2,1]), updateRelacion);
+router.post('/updateUser', authenticateToken([2,1]), updateUser);
+router.post('/uploadPhoto', authenticateToken([2,1]), uploadFileMiddleware, uploadPhoto);
 
 export default router;

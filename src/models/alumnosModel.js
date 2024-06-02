@@ -15,7 +15,13 @@ const Alumnos = sequelize.define('Alumnos', {
     estado_relacion: {
         type: DataTypes.TINYINT(1).UNSIGNED,
         allowNull: true,
-    }
+    },
+    relacion_id: {
+        type: DataTypes.INTEGER(8).UNSIGNED,
+        autoIncrement: true,
+        unique: true,
+    },
+
 },{
     timestamps: true, // Activa la creación automática de createdAt y updatedAt
     updatedAt: 'updated_at',

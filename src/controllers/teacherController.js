@@ -157,3 +157,54 @@ export const createRelacionAlumnoProfesor = async (req, res) => {
       });
     }
   }
+  export const getRelacionIdProfesor = async (req, res) => {
+    const { teacher_id } = req.params;
+  
+    try {
+      // Obtener todas las relaciones donde el profesor sea el indicado
+      const relaciones = await Alumnos.findAll({
+        where: { teacher_id, estado_relacion: 0},
+        include: [{ model: User, as: 'Alumno', attributes: ['name', 'surname'] }]
+      });
+  
+      res.status(200).json({
+        code: 1,
+        message: 'Relacións obtenida exitosamente',
+        data: relaciones
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        code: -100,
+        message: 'Ocurrió un error al obtener la relacións'
+      });
+    }
+  }
+   
+  export const deleteRelacion = async (req, res) => {
+    const { relacion_id } = req.params;
+  
+    try {
+      const relacion = await Alumnos.findOne({
+        where: { relacion_id }
+      });
+      if (!relacion) {
+        return res.status(404).json({
+          code: -1,
+          message: 'No se encontró la relación'
+        });
+      }
+  
+      await relacion.destroy();
+      res.status(200).json({
+        code: 1,
+        message: 'Relación eliminada exitosamente'
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        code: -100,
+        message: 'Ocurrió un error al eliminar la relación'
+      });
+    }
+  };

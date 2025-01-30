@@ -19,10 +19,10 @@ dotenv.config();
 
 const app = express();
 
-// Configura el middleware CORS para que peuda recibir solicitudes de POST, PUT, DELETE, UPDATE, etc.
+// Configura el middleware CORS para que pueda recibir solicitudes de POST, PUT, DELETE, UPDATE, etc.
 app.use(cors({
   credentials: true,
-  origin: 'http://localhost:4200'
+  origin: ['http://localhost:4200', 'https://tenis-progress.netlify.app']
 }));
 
 //header and populate req.cookies with an object keyed by the cookie names

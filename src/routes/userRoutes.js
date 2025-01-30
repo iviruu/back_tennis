@@ -4,7 +4,7 @@ import { getUser, updateUser, uploadPhoto } from '../controllers/userController.
 import { authenticateToken } from '../middlewares/authenticateToken.js';
 import { uploadFileMiddleware } from '../middlewares/upload.js';
 import { getSaques, getResultados, getResultadosByIdSaque, createResultados, getResultadosByIdAlumno, postResultadosSaqueAlumno } from '../controllers/resultadosController.js';
-import { createRelacionAlumnoProfesor, deleteRelacion, getAlumnosByProfesor, getAlumnosList, getRelacion, getRelacionIdProfesor, updateRelacion } from '../controllers/teachercontroller.js';
+import { createRelacionAlumnoProfesor, deleteRelacion, getAlumnosByProfesor, getAlumnosList, getRelacion, getRelacionIdProfesor, updateRelacion } from '../controllers/teacherController.js';
 
 
 const router = Router();

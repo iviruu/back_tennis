@@ -16,8 +16,21 @@ const sequelize = new Sequelize(dbUrl, {
     ssl: {
       require: true,
       rejectUnauthorized: false
-    }
-  } : {},
+    },
+    connectTimeout: 60000
+  } : {
+    connectTimeout: 60000
+  },
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 60000,
+    idle: 10000
+  },
+  retry: {
+    max: 3,
+    timeout: 60000
+  },
   host: process.env.DB_HOST || 'localhost',
   port: process.env.DB_PORT || 3306,
   logging: false // Desactivar logs SQL
@@ -42,6 +55,11 @@ const testConnection = async () => {
     await syncroModel();
   } catch (error) {
     console.error('Unable to connect to the database:', error);
+    // Intentar reconectar después de un tiempo si falla
+    if (error.name === 'SequelizeConnectionError') {
+      console.log('Retrying connection in 5 seconds...');
+      setTimeout(testConnection, 5000);
+    }
   }
 };
 

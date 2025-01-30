@@ -1,37 +1,67 @@
-# Backend de Nodejs
+# Es back end de Tenis Progress.
 
-Aquí se encuentra una breve descripción del proyecto.
 
-## Instalación
+## Descripción 📄
 
-Para instalar este proyecto, sigue estos pasos:
+Es un back end hecho con Node.js y Express.js. Es una base de datos de los profesores y alumnos 
 
-1. Clona el repositorio en tu máquina local.
-2. Instala las dependencias utilizando `npm install`.
 
-## Uso
 
-Para ejecutar el proyecto, utiliza el siguiente comando:
 
+
+## Tecnologías Utilizadas 💻
+
+- JavaScript
+- Node.js
+- Express.js 
+- MySQL
+- Xampp
+- PhpMyAdmin
+
+## Requisitos 📋
+
+- Node.js y npm instalados en tu sistema. Puedes descargarlos desde [nodejs.org](https://nodejs.org/).
+
+
+
+## Instalación 🛠️
+
+1. Clona el repositorio:
+```bash
+git clone https://github.com/iviruu/back.git
 ```
-npm run start
-```
-Para ejecutar el proyecto en dev, utiliza el siguiente comando:
 
-```
-npm run dev
+2. Ingresa al directorio del proyecto:
+```bash
+cd back
 ```
 
-## Contribución
+3. Instala las dependencias:
+```bash
+npm install
+```
 
-Si quieres contribuir a este proyecto, por favor sigue estos pasos:
+4. Tienes que entrar en xampp y abrir el servidor de apache y mysql.
 
-1. Haz un fork del repositorio.
-2. Crea una nueva rama (`git checkout -b feature/nueva-funcionalidad`).
-3. Haz tus cambios y haz un commit (`git commit -m "Agregué una nueva funcionalidad"`).
-4. Envía tus cambios al repositorio remoto (`git push origin feature/nueva-funcionalidad`).
-5. Crea un pull request para que tus cambios sean revisados.
+5. Tienes que crear una base de datos en phpmyadmin con el nombre de "app_grafics".
 
-## Licencia
+6. Levanta el servidor:
 
-Este proyecto está licenciado bajo la Licencia MIT. Ver el archivo `LICENSE` para más información.
+```bash 
+nodemon index.js
+```
+
+7. Aqui te dejo el github del front end para que puedas ver como se conecta con el back end.
+
+https://github.com/iviruu/tenis_progres.git
+
+
+
+
+
+
+
+
+
+
+

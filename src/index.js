@@ -22,7 +22,11 @@ const app = express();
 // Configura el middleware CORS para que pueda recibir solicitudes de POST, PUT, DELETE, UPDATE, etc.
 app.use(cors({
   credentials: true,
-  origin: ['http://localhost:4200', 'https://tenis-progress.netlify.app']
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://tenis-progress.netlify.app']
+    : ['http://localhost:4200'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 //header and populate req.cookies with an object keyed by the cookie names
@@ -33,6 +37,13 @@ app.use(express.json());
 
 // Middleware para analizar el cuerpo de las solicitudes con datos de formulario
 app.use(express.urlencoded({ extended: true })); // Para analizar datos de formularios en el cuerpo de la solicitud
+
+// Añade esto después de la configuración de cookie-parser
+app.use((req, res, next) => {
+  console.log('Cookies recibidas:', req.cookies);
+  console.log('Headers:', req.headers);
+  next();
+});
 
 await testConnection();
 await insertInitialUserData();

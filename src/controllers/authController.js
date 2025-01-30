@@ -7,6 +7,15 @@ import { validationResult } from 'express-validator';
 import { serialize } from 'cookie';
 import { esPar, contraseniasCoinciden } from '../utils/utils.js';
 
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+  maxAge: 60 * 60 * 24 * 30,
+  path: '/',
+  domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : undefined
+};
+
 export const register = async (req, res) => {
   try {
 
@@ -35,13 +44,7 @@ export const register = async (req, res) => {
 
     // Generar un token de acceso y lo guardo en un token seguro (httpOnly)
     const accessToken = jwt.sign({ id_user: newUser.id_user, name: newUser.name }, process.env.JWT_SECRET);
-    const token = serialize('token', accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 60 * 60 * 24 * 30,
-      path: '/',
-    });
+    const token = serialize('token', accessToken, cookieOptions);
     res.setHeader('Set-Cookie', token);
 
     // Enviar una respuesta al cliente
@@ -97,13 +100,7 @@ export const login = async (req, res) => {
 
     // Generar un token de acceso y lo guardo en un token seguro (httpOnly)
     const accessToken = jwt.sign({ id_user: user.id_user, name: user.name }, process.env.JWT_SECRET);
-    const token = serialize('token', accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 60 * 60 * 24 * 30,
-      path: '/',
-    });
+    const token = serialize('token', accessToken, cookieOptions);
     res.setHeader('Set-Cookie', token);
     
     // Enviar una respuesta al cliente
@@ -215,13 +212,7 @@ export const changePassword = async (req, res) => {
 
     // Generar un token de acceso y lo guardo en un token seguro (httpOnly)
     const accessToken = jwt.sign({ id_user: user.id_user, name: user.name }, process.env.JWT_SECRET);
-    const token_jwt = serialize('token', accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 60 * 60 * 24 * 30,
-      path: '/',
-    });
+    const token_jwt = serialize('token', accessToken, cookieOptions);
     res.setHeader('Set-Cookie', token_jwt);
 
     // Enviar una respuesta al cliente
@@ -252,11 +243,8 @@ export const logout = async (req, res) => {
   const jwt = cookies.token;
 
   const token = serialize('token', null, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge: -1,
-    path: '/',
+    ...cookieOptions,
+    maxAge: -1
   });
   res.setHeader('Set-Cookie', token);
   res.status(200).json({

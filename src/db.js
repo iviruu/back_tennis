@@ -1,37 +1,29 @@
 import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 
-
 dotenv.config();
 
-// Seleccionar URL de base de datos según el entorno
-const dbUrl = process.env.NODE_ENV === 'production' 
-  ? process.env.DATABASE_URL_PROD 
-  : process.env.DATABASE_URL;
+// Validar que DATABASE_URL existe
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL no está definida en las variables de entorno');
+}
 
-console.log('Ambiente:', process.env.NODE_ENV);
-console.log('Intentando conectar a:', dbUrl.replace(/:[^:]*@/, ':****@')); // Oculta la contraseña en los logs
-
-// Configuración de la conexión
-const sequelize = new Sequelize(dbUrl, {
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'mysql',
   dialectOptions: {
-    connectTimeout: 30000,
-    // SSL solo para producción
-    ...(process.env.NODE_ENV === 'production' && {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false
-      }
-    })
+    connectTimeout: 30000
   },
   pool: {
-    max: 2,
+    max: 5,
     min: 0,
     acquire: 30000,
     idle: 10000
   },
-  logging: console.log // Activar logs SQL temporalmente para debug
+  logging: false,
+  retry: {
+    max: 3, // Número máximo de intentos de reconexión
+    timeout: 3000 // Tiempo entre intentos en milisegundos
+  }
 });
 
 const syncroModel = async () => {
@@ -39,33 +31,32 @@ const syncroModel = async () => {
     await sequelize.sync({ force: false });
     console.log('Modelos sincronizados con la base de datos');
   } catch (error) {
-    console.error('Error al sincronizar los modelos:', error);
-    throw error; // Propagar el error
+    console.error('Error al sincronizar los modelos:', error.message);
+    throw error;
   }
 };
   
 const testConnection = async () => {
-  let retries = 3;
-  
-  while (retries > 0) {
-    try {
-      console.log(`Intento de conexión ${4 - retries}/3`);
-      await sequelize.authenticate();
-      console.log('Conexión establecida exitosamente.');
-      await syncroModel();
-      return true;
-    } catch (error) {
-      retries--;
-      console.error('Error de conexión:', error.message);
-      
-      if (retries > 0) {
-        console.log(`Reintentando en 5 segundos... ${retries} intentos restantes`);
-        await new Promise(resolve => setTimeout(resolve, 5000));
-      } else {
-        console.error('Todos los intentos de conexión fallaron');
-        throw error;
-      }
+  try {
+    await sequelize.authenticate();
+    console.log('Conexión establecida exitosamente.');
+    await syncroModel();
+  } catch (error) {
+    console.error('Error de conexión a la base de datos:', {
+      message: error.message,
+      code: error.parent?.code,
+      hostname: error.parent?.hostname,
+      url: process.env.DATABASE_URL.replace(/:[^:]*@/, ':****@') // Oculta la contraseña al mostrar la URL
+    });
+    
+    if (error.parent?.code === 'ENOTFOUND') {
+      console.error('No se puede resolver el nombre del host. Por favor, verifica:');
+      console.error('1. La URL de la base de datos en el archivo .env');
+      console.error('2. Que el host especificado sea correcto y esté accesible');
+      console.error('3. La configuración de red y firewall');
     }
+    
+    throw error;
   }
 };
 

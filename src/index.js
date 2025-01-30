@@ -27,7 +27,7 @@ app.use(cors({
     : ['http://localhost:4200'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
-  exposedHeaders: ['Set-Cookie', 'Authorization'],
+  exposedHeaders: ['Set-Cookie'],
   preflightContinue: true,
   optionsSuccessStatus: 200
 }));

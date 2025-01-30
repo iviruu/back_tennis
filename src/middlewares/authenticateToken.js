@@ -6,20 +6,11 @@ export const authenticateToken = (allowedRoles) => async (req, res, next) => {
   try {
     console.log('----------------------------------------');
     console.log('Auth Middleware - Cookies:', req.cookies);
-    console.log('Auth Middleware - Headers:', req.headers);
     
-    // Intentar obtener el token de las cookies o del header de Authorization
-    let accessToken = req.cookies.token;
-    
-    if (!accessToken && req.headers.authorization) {
-      const authHeader = req.headers.authorization;
-      if (authHeader.startsWith('Bearer ')) {
-        accessToken = authHeader.substring(7);
-      }
-    }
+    const accessToken = req.cookies.token;
 
     if (!accessToken) {
-      console.log('Auth Middleware - No token found in cookies or Authorization header');
+      console.log('Auth Middleware - No token found in cookies');
       return res.status(401).json({
         code: -50,
         message: 'No se ha proporcionado un token de acceso'

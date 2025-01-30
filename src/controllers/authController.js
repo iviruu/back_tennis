@@ -11,8 +11,9 @@ const cookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
   sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-  maxAge: 30 * 24 * 60 * 60 * 1000, // 30 días en milisegundos
+  maxAge: 30 * 24 * 60 * 60 * 1000, // 30 días
   path: '/',
+  // Solo establecer domain en producción
   domain: process.env.NODE_ENV === 'production' ? '.up.railway.app' : undefined
 };
 
@@ -109,13 +110,17 @@ export const login = async (req, res) => {
       { expiresIn: '30d' }
     );
 
+    // Solo usar la cookie para el token
     const token = serialize('token', accessToken, cookieOptions);
-    
-    // Añadir el token también en el header de Authorization
-    res.setHeader('Authorization', `Bearer ${accessToken}`);
     res.setHeader('Set-Cookie', token);
     
-    // Enviar una respuesta al cliente
+    // Log para debugging
+    console.log('----------------------------------------');
+    console.log('Login - Cookie options:', cookieOptions);
+    console.log('Login - Cookie string:', token);
+    console.log('Login - Response headers:', res.getHeaders());
+    console.log('----------------------------------------');
+
     res.status(200).json({
       code: 1,
       message: 'Login OK',

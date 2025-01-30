@@ -41,11 +41,16 @@ app.use(express.urlencoded({ extended: true })); // Para analizar datos de formu
 
 // Middleware para logging mejorado
 app.use((req, res, next) => {
+  console.log('----------------------------------------');
   console.log('Request URL:', req.url);
   console.log('Request Method:', req.method);
   console.log('Cookies recibidas:', req.cookies);
+  console.log('Token en cookies:', req.cookies.token);
   console.log('Authorization Header:', req.headers.authorization);
   console.log('Origin:', req.headers.origin);
+  console.log('Host:', req.headers.host);
+  console.log('All Headers:', JSON.stringify(req.headers, null, 2));
+  console.log('----------------------------------------');
   next();
 });
 
@@ -54,6 +59,16 @@ await insertInitialUserData();
 
 // Configurar rutas
 app.use('/auth', authRoutes);
+
+app.use('/user', (req, res, next) => {
+  console.log('----------------------------------------');
+  console.log('User Route - Token en cookies:', req.cookies.token);
+  console.log('User Route - Headers:', req.headers);
+  console.log('User Route - URL:', req.url);
+  console.log('----------------------------------------');
+  next();
+});
+
 app.use('/user', userRoutes);
 
 app.use('/test', testRoutes);

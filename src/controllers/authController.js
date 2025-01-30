@@ -13,7 +13,8 @@ const cookieOptions = {
   sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
   maxAge: 60 * 60 * 24 * 30,
   path: '/',
-  domain: process.env.NODE_ENV === 'production' ? '.up.railway.app' : undefined
+  // Quitamos el domain para que use el dominio actual
+  // domain: process.env.NODE_ENV === 'production' ? 'backtennis-production.up.railway.app' : undefined
 };
 
 export const register = async (req, res) => {
@@ -99,8 +100,32 @@ export const login = async (req, res) => {
     }
 
     // Generar un token de acceso y lo guardo en un token seguro (httpOnly)
-    const accessToken = jwt.sign({ id_user: user.id_user, name: user.name }, process.env.JWT_SECRET);
+    const accessToken = jwt.sign(
+      { 
+        id_user: user.id_user, 
+        name: user.name,
+        roles: Number(user.roles) // Aseguramos que roles sea un número
+      }, 
+      process.env.JWT_SECRET,
+      { expiresIn: '30d' }
+    );
+
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 días en milisegundos
+      path: '/'
+    };
+
     const token = serialize('token', accessToken, cookieOptions);
+    
+    console.log('----------------------------------------');
+    console.log('Login - Token generado:', accessToken);
+    console.log('Login - Cookie options:', cookieOptions);
+    console.log('Login - Headers:', req.headers);
+    console.log('----------------------------------------');
+
     res.setHeader('Set-Cookie', token);
     
     // Enviar una respuesta al cliente

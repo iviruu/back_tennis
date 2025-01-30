@@ -13,7 +13,7 @@ const cookieOptions = {
   sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
   maxAge: 60 * 60 * 24 * 30,
   path: '/',
-  domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : undefined
+  domain: process.env.NODE_ENV === 'production' ? '.up.railway.app' : undefined
 };
 
 export const register = async (req, res) => {

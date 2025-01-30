@@ -3,13 +3,9 @@ import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
 import RecoveryToken from '../models/recoveryTokenModel.js';
-import sendEmail from "../utils/email/sendEmail.js";
 import { validationResult } from 'express-validator';
 import { serialize } from 'cookie';
-// Creación de funciones personalizadas
 import { esPar, contraseniasCoinciden } from '../utils/utils.js';
-
-const clietURL = process.env.CLIENT_URL;
 
 export const register = async (req, res) => {
   try {
@@ -136,8 +132,6 @@ export const login = async (req, res) => {
 export const forgotPassword = async (req, res) => {
   try {
     const errors = validationResult(req);
-
-    // If there are validation errors, respond with a 400 Bad Request status
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
@@ -160,41 +154,20 @@ export const forgotPassword = async (req, res) => {
       created_at: Date.now(),
     }).save();
 
-    const link = `${clietURL}/change-password?token=${resetToken}&id=${user.id_user}`;
-
-    await sendEmail(
-      user.email,
-      "Password Reset Request",
-      {
-        name: user.name,
-        link: link,
-      },
-      "email/template/requestResetPassword.handlebars"
-    ).then(response => {
-      console.log("Resultado del envío del correo:", response);
-      res.status(200).json({
-        code: 100,
-        message: 'Send Email OK',
-        data: {
-          token: resetToken,
-          link: link
-        }
-      });
-
-    },error => {
-      console.error (error)
-      res.status(200).json({
-        code: -80,
-        message: 'Send Email KO',
-        data: {error}
-      });
-    })
+    // Retornar solo el token sin enviar email
+    res.status(200).json({
+      code: 100,
+      message: 'Reset token generated successfully',
+      data: {
+        token: resetToken
+      }
+    });
 
   } catch (error) {
     console.error(error);
     res.status(500).json({
       code: -100,
-      message: 'Ha ocurrido un error al actualizar el usuario',
+      message: 'Ha ocurrido un error al procesar la solicitud',
       error: error
     });
   }

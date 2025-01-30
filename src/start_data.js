@@ -1,4 +1,4 @@
-import Roles from './models/rolesmodel.js';
+import Roles from './models/rolesModel.js';
 import Saque from './models/saquesModel.js';
 import User from './models/userModel.js';
 

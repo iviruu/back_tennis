@@ -13,7 +13,7 @@ export const authenticateToken = (allowedRoles) => async (req, res, next) => {
       console.log('Auth Middleware - No token found in cookies');
       return res.status(401).json({
         code: -50,
-        message: 'No se ha proporcionado un token de acceso'
+        message: 'No se encontró token en las cookies'
       });
     }
 
@@ -26,7 +26,7 @@ export const authenticateToken = (allowedRoles) => async (req, res, next) => {
         console.log('Auth Middleware - No user found for token');
         return res.status(401).json({
           code: -70,
-          message: 'Token de acceso no válido'
+          message: 'Token válido pero usuario no encontrado'
         });
       }
 
@@ -38,7 +38,7 @@ export const authenticateToken = (allowedRoles) => async (req, res, next) => {
         console.log('Auth Middleware - Permission denied');
         return res.status(403).json({
           code: -10,
-          message: 'No tiene los permisos necesarios.'
+          message: 'Usuario no tiene los permisos necesarios'
         });
       }
 
@@ -50,7 +50,7 @@ export const authenticateToken = (allowedRoles) => async (req, res, next) => {
       console.log('Auth Middleware - JWT verification failed:', jwtError.message);
       return res.status(401).json({
         code: -60,
-        message: 'Token de acceso inválido o expirado'
+        message: 'Token inválido o expirado'
       });
     }
   } catch (error) {

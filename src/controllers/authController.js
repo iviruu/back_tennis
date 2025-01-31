@@ -9,11 +9,11 @@ import { esPar, contraseniasCoinciden } from '../utils/utils.js';
 
 const cookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-  maxAge: 30 * 24 * 60 * 60 * 1000, // 30 días
+  secure: true,  // Siempre true para HTTPS
+  sameSite: 'none',  // Siempre 'none' para cross-site
+  maxAge: 30 * 24 * 60 * 60 * 1000,
   path: '/',
-  // Solo establecer domain en producción
+  domain: '.up.railway.app'  // Dominio base de tu backend
 };
 
 export const register = async (req, res) => {

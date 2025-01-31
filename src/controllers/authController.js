@@ -111,13 +111,28 @@ export const login = async (req, res) => {
 
     // Se envía como cookie httpOnly
     const token = serialize('token', accessToken, cookieOptions);
+    
+    // Configuración específica de CORS para cookies
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Origin', process.env.NODE_ENV === 'production' 
+      ? 'https://tenis-progress.netlify.app'
+      : 'http://localhost:4200'
+    );
     res.setHeader('Set-Cookie', token);
     
-    // Log para debugging
+    // Log mejorado para debugging
     console.log('----------------------------------------');
-    console.log('Login - Cookie options:', cookieOptions);
+    console.log('Login - Request Origin:', req.headers.origin);
+    console.log('Login - Cookie options:', {
+      ...cookieOptions,
+      domain: process.env.NODE_ENV === 'production' ? '.up.railway.app' : 'localhost'
+    });
     console.log('Login - Cookie string:', token);
-    console.log('Login - Response headers:', res.getHeaders());
+    console.log('Login - Response headers:', {
+      'access-control-allow-credentials': res.getHeader('Access-Control-Allow-Credentials'),
+      'access-control-allow-origin': res.getHeader('Access-Control-Allow-Origin'),
+      'set-cookie': res.getHeader('Set-Cookie')
+    });
     console.log('----------------------------------------');
 
     res.status(200).json({
@@ -133,11 +148,11 @@ export const login = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error(error);
+    console.error('Login error:', error);
     res.status(500).json({
       code: -100,
       message: 'Ha ocurrido un error al iniciar sesión',
-      error: error
+      error: process.env.NODE_ENV === 'production' ? undefined : error.message
     });
   }
 };

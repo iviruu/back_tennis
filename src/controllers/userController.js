@@ -2,7 +2,6 @@ import User from '../models/userModel.js';
 import { validationResult } from 'express-validator';
 import fs from 'fs';
 import path from 'path';
-//https://www.bezkoder.com/node-js-express-file-upload/
 
 
 export const getUser = async (req, res) => {

@@ -19,8 +19,7 @@ dotenv.config();
 
 const app = express();
 
-// Configura el middleware CORS para que pueda recibir solicitudes y cookies
-app.use(cors({
+const corsOptions = {
   credentials: true,
   origin: process.env.NODE_ENV === 'production' 
     ? ['https://tenis-progress.netlify.app']
@@ -30,12 +29,13 @@ app.use(cors({
   exposedHeaders: ['Set-Cookie'],
   preflightContinue: true,
   optionsSuccessStatus: 200
-}));
+};
 
-// Configuración específica para cookies
+app.use(cors(corsOptions));
+
+// Middleware adicional para asegurar las cookies
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie');
   next();
 });
 

@@ -14,7 +14,6 @@ const cookieOptions = {
   maxAge: 30 * 24 * 60 * 60 * 1000, // 30 días
   path: '/',
   // Solo establecer domain en producción
-  domain: process.env.NODE_ENV === 'production' ? '.up.railway.app' : undefined
 };
 
 export const register = async (req, res) => {
@@ -110,7 +109,7 @@ export const login = async (req, res) => {
       { expiresIn: '30d' }
     );
 
-    // Solo usar la cookie para el token
+    // Se envía como cookie httpOnly
     const token = serialize('token', accessToken, cookieOptions);
     res.setHeader('Set-Cookie', token);
     

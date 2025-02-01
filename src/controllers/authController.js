@@ -43,16 +43,22 @@ export const register = async (req, res) => {
     await newUser.save();
     const user = req.body;
 
-    // Generar un token de acceso y lo guardo en un token seguro (httpOnly)
-    const accessToken = jwt.sign({ id_user: newUser.id_user, name: newUser.name }, process.env.JWT_SECRET);
-    const token = serialize('token', accessToken, cookieOptions);
-    res.setHeader('Set-Cookie', token);
+    const accessToken = jwt.sign(
+      { 
+        id_user: newUser.id_user, 
+        name: newUser.name,
+        roles: Number(newUser.roles)
+      }, 
+      process.env.JWT_SECRET,
+      { expiresIn: '30d' }
+    );
 
     // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
       message: 'Usuario registrado correctamente',
       data: {
+        token: accessToken,
         user: {
           name: user.name,
           surname: user.surname,
@@ -238,20 +244,26 @@ export const changePassword = async (req, res) => {
       }
     })
 
-    // Generar un token de acceso y lo guardo en un token seguro (httpOnly)
-    const accessToken = jwt.sign({ id_user: user.id_user, name: user.name }, process.env.JWT_SECRET);
-    const token_jwt = serialize('token', accessToken, cookieOptions);
-    res.setHeader('Set-Cookie', token_jwt);
+    const accessToken = jwt.sign(
+      { 
+        id_user: user.id_user, 
+        name: user.name,
+        roles: Number(user.roles)
+      }, 
+      process.env.JWT_SECRET,
+      { expiresIn: '30d' }
+    );
 
-    // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
-      message: 'User Detail',
+      message: 'Password updated successfully',
       data: {
+        token: accessToken,
         user: {
           name: user.name,
           surname: user.surname,
-          email: user.email
+          email: user.email,
+          roles: String(user.roles)
         } 
       }
     });
@@ -266,17 +278,9 @@ export const changePassword = async (req, res) => {
 };
 
 export const logout = async (req, res) => {
-
-  const { cookies } = req;
-  const jwt = cookies.token;
-
-  const token = serialize('token', null, {
-    ...cookieOptions,
-    maxAge: -1
-  });
-  res.setHeader('Set-Cookie', token);
   res.status(200).json({
     code: 0,
-    message: 'Logged out - Delete Token',
+    message: 'Logged out successfully'
   });
-}
+  // El frontend se encargará de eliminar el token del localStorage
+};

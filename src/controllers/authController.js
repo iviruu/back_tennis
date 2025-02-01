@@ -110,17 +110,13 @@ export const login = async (req, res) => {
       { expiresIn: '30d' }
     );
 
-    // Se envía como cookie httpOnly
-    const token = serialize('token', accessToken, cookieOptions);
-    
     // Configuración específica de CORS para cookies
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Origin', process.env.NODE_ENV === 'production' 
       ? 'https://tenis-progress.netlify.app'
       : 'http://localhost:4200'
     );
-    res.setHeader('Set-Cookie', token);
-    
+
     // Log mejorado para debugging
     console.log('----------------------------------------');
     console.log('Login - Request Origin:', req.headers.origin);
@@ -128,11 +124,10 @@ export const login = async (req, res) => {
       ...cookieOptions,
       domain: process.env.NODE_ENV === 'production' ? '.up.railway.app' : 'localhost'
     });
-    console.log('Login - Cookie string:', token);
+    console.log('Login - Cookie string:', accessToken);
     console.log('Login - Response headers:', {
       'access-control-allow-credentials': res.getHeader('Access-Control-Allow-Credentials'),
       'access-control-allow-origin': res.getHeader('Access-Control-Allow-Origin'),
-      'set-cookie': res.getHeader('Set-Cookie')
     });
     console.log('----------------------------------------');
 

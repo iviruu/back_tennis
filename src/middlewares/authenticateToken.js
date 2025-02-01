@@ -4,21 +4,18 @@ import User from '../models/userModel.js';
 
 export const authenticateToken = (allowedRoles) => async (req, res, next) => {
   try {
-    console.log('----------------------------------------');
-    console.log('Auth Middleware - Cookies:', req.cookies);
-    
-    const accessToken = req.cookies.token;
+    const authHeader = req.headers.authorization;
+    const token = authHeader?.split(' ')[1];
 
-    if (!accessToken) {
-      console.log('Auth Middleware - No token found in cookies');
+    if (!token) {
       return res.status(401).json({
         code: -50,
-        message: 'No se encontró token en las cookies'
+        message: 'No se ha proporcionado un token de acceso'
       });
     }
 
     try {
-      const decodedToken = jwt.verify(accessToken, process.env.JWT_SECRET);
+      const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
       console.log('Auth Middleware - Decoded token:', decodedToken);
       
       const user = await User.findByPk(decodedToken.id_user);
@@ -44,7 +41,6 @@ export const authenticateToken = (allowedRoles) => async (req, res, next) => {
 
       req.user = user;
       console.log('Auth Middleware - Authentication successful');
-      console.log('----------------------------------------');
       next();
     } catch (jwtError) {
       console.log('Auth Middleware - JWT verification failed:', jwtError.message);

@@ -9,11 +9,12 @@ import { esPar, contraseniasCoinciden } from '../utils/utils.js';
 
 const cookieOptions = {
   httpOnly: true,
-  secure: true,  // Siempre true para HTTPS
-  sameSite: 'none',  // Siempre 'none' para cross-site
+  secure: true,  // Siempre true porque Netlify usa HTTPS
+  sameSite: 'none',  // Necesario para cross-site
   maxAge: 30 * 24 * 60 * 60 * 1000,
   path: '/',
-  domain: '.up.railway.app'  // Dominio base de tu backend
+  // No establecer domain para permitir cross-domain cookies
+  domain: undefined  // Quitamos el dominio fijo
 };
 
 export const register = async (req, res) => {
@@ -139,6 +140,7 @@ export const login = async (req, res) => {
       code: 1,
       message: 'Login OK',
       data: {
+        token: accessToken,
         user: {
           name: user.name,
           surname: user.surname,

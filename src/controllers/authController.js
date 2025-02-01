@@ -19,16 +19,14 @@ const cookieOptions = {
 
 export const register = async (req, res) => {
   try {
-
     const errors = validationResult(req);
-
-    // Si hay errores de validación, responde con un estado 400 Bad Request
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
    
     const { email, password, name, surname, roles } = req.body;
-    // Verificar si ya existe un usuario con el mismo correo electrónico
+    
+    // Verificar usuario existente
     const existingUser = await User.findOne({ where: { email }});
     if (existingUser) {
       return res.status(400).json({
@@ -36,13 +34,19 @@ export const register = async (req, res) => {
         message: 'Ya existe un usuario con el mismo correo electrónico'
       });
     }
-    // Crear un nuevo usuario
 
+    // Crear usuario
     const hashedPassword = await bcrypt.hash(password, Number(process.env.BCRYPT_SALT));
-    const newUser = new User({ email, password: hashedPassword, name, surname, roles, status: 1 });
-    await newUser.save();
-    const user = req.body;
+    const newUser = await User.create({ 
+      email, 
+      password: hashedPassword, 
+      name, 
+      surname, 
+      roles, 
+      status: 1 
+    });
 
+    // Generar token
     const accessToken = jwt.sign(
       { 
         id_user: newUser.id_user, 
@@ -53,26 +57,36 @@ export const register = async (req, res) => {
       { expiresIn: '30d' }
     );
 
-    // Enviar una respuesta al cliente
+    // Log para debugging
+    console.log('----------------------------------------');
+    console.log('Register - Generated token:', accessToken);
+    console.log('Register - User data:', {
+      id: newUser.id_user,
+      name: newUser.name,
+      roles: newUser.roles
+    });
+    console.log('----------------------------------------');
+
+    // Enviar respuesta con token
     res.status(200).json({
       code: 1,
       message: 'Usuario registrado correctamente',
       data: {
         token: accessToken,
         user: {
-          name: user.name,
-          surname: user.surname,
-          email: user.email,
-          roles: String(user.roles)
+          name: newUser.name,
+          surname: newUser.surname,
+          email: newUser.email,
+          roles: String(newUser.roles)
         } 
       }
     });
   } catch (error) {
-    console.error(error);
+    console.error('Register error:', error);
     res.status(500).json({
       code: -100,
       message: 'Ha ocurrido un error al registrar el usuario',
-      error: error,
+      error: process.env.NODE_ENV === 'production' ? undefined : error.message
     });
   }
 };

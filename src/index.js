@@ -22,13 +22,11 @@ const app = express();
 const corsOptions = {
   credentials: true,
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://tenis-progress.netlify.app']  // Tu dominio de Netlify
+    ? ['https://tenis-progress.netlify.app']
     : ['http://localhost:4200'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
-  exposedHeaders: ['Set-Cookie'],
-  preflightContinue: false,
-  optionsSuccessStatus: 204
+  exposedHeaders: ['Set-Cookie']
 };
 
 app.use(cors(corsOptions));

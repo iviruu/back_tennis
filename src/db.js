@@ -4,11 +4,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Validar que DATABASE_URL existe
-if (!process.env.DATABASE_URL) {
+if (!process.env.MYSQL_URL) {
   throw new Error('DATABASE_URL no está definida en las variables de entorno');
 }
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
+const sequelize = new Sequelize(process.env.MYSQL_URL, {
   dialect: 'mysql',
   dialectOptions: {
     connectTimeout: 30000

@@ -28,7 +28,7 @@ Es un back end hecho con Node.js y Express.js. Es una base de datos de los profe
 
 1. Clona el repositorio:
 ```bash
-git clone https://github.com/iviruu/back.git
+git clone https://github.com/iviruu/back_tennis.git
 ```
 
 2. Ingresa al directorio del proyecto:

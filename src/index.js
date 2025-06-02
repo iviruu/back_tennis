@@ -21,7 +21,7 @@ const app = express();
 
 const corsOptions = {
   credentials: true,
-  origin: ['https://tenis-progress.netlify.app', 'http://localhost:4200'],
+  origin: true, // Permite todos los orígenes temporalmente
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
   exposedHeaders: ['Set-Cookie']
@@ -31,13 +31,19 @@ app.use(cors(corsOptions));
 
 // Middleware adicional para asegurar las cookies
 app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (corsOptions.origin.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
+  console.log('CORS Debug - Origin:', req.headers.origin);
+  console.log('CORS Debug - Method:', req.method);
+  console.log('CORS Debug - Headers:', req.headers);
+  
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cookie');
+  
+  // Responder inmediatamente a las peticiones OPTIONS
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
   next();
 });
 

@@ -89,6 +89,7 @@ const __dirname = path.resolve();
 app.use('/uploads', express.static(path.join(__dirname, 'src/uploads')));
 
 // Iniciar el servidor
-app.listen(3000, () => {
-  console.log("Servidor iniciado en el puerto 3000");
+const PORT = process.env.MYSQLPORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor iniciado en el puerto ${PORT}`);
 });

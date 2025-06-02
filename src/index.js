@@ -21,9 +21,7 @@ const app = express();
 
 const corsOptions = {
   credentials: true,
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://tenis-progress.netlify.app']
-    : ['http://localhost:4200'],
+  origin: ['https://tenis-progress.netlify.app', 'http://localhost:4200'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
   exposedHeaders: ['Set-Cookie']
@@ -33,12 +31,13 @@ app.use(cors(corsOptions));
 
 // Middleware adicional para asegurar las cookies
 app.use((req, res, next) => {
-  // Asegurarse de que el origen coincida exactamente con tu dominio de Netlify
   const origin = req.headers.origin;
   if (corsOptions.origin.includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
   }
   res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cookie');
   next();
 });
 
